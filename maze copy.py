@@ -12,8 +12,9 @@ class Maze:
         self.grid = [[0] * maze_size for _ in range(maze_size)]  # Initialize empty grid
         self.player_pos = [random.randint(0, maze_size - 1), random.randint(0, maze_size - 1)]
         self.treasures = self.generate_treasures(num_treasures)
-        self.walls = self.generate_walls()
         self.water = self.generate_water()
+        self.walls = self.generate_walls()
+
 
     def generate_treasures(self, num_treasures):
         treasures = []
@@ -83,6 +84,7 @@ def move_player(maze):
     #path_to_treasure = maze.bfs(tuple(maze.player_pos), tuple(nearest_treasure)) if nearest_treasure else []
     print(steps)   
     if path_to_treasure:
+        
         next_pos = path_to_treasure[0]
         return 'UP' if next_pos[1] < maze.player_pos[1] else 'DOWN' if next_pos[1] > maze.player_pos[1] else \
                'LEFT' if next_pos[0] < maze.player_pos[0] else 'RIGHT'
@@ -156,7 +158,11 @@ while running:
         maze.player_pos = next_pos
     else:
         print("Invalid move!", next_pos)
-        continue        
+        continue 
+
+    if [px,py] in maze.water:
+        score -=5
+        print("Passou pela agua")       
 
     screen.fill(BLACK)
     for row in range(maze.maze_size):
