@@ -4,18 +4,18 @@ from collections import deque
 
 # Initialize Pygame
 pygame.init()
-
+#Criei uma classe onde juntei a criação do mapa, agua e parede em um lugar
 class Maze:
     def __init__(self, maze_size, num_treasures, block_size):
         self.maze_size = maze_size
         self.block_size = block_size
-        self.grid = [[0] * maze_size for _ in range(maze_size)]  # Initialize empty grid
+        self.grid = [[0] * maze_size for _ in range(maze_size)]
         self.player_pos = [random.randint(0, maze_size - 1), random.randint(0, maze_size - 1)]
         self.treasures = self.generate_treasures(num_treasures)
         self.water = self.generate_water()
         self.walls = self.generate_walls()
 
-
+    #Gerar tesouros
     def generate_treasures(self, num_treasures):
         treasures = []
         for _ in range(num_treasures):
@@ -25,16 +25,16 @@ class Maze:
                     treasures.append(treasure)
                     break
         return treasures
-
+    #Gerar paredes
     def generate_walls(self):
         walls = []
         for i in range(1, self.maze_size - 1):
             for j in range(1, self.maze_size - 1):
                 if [i, j] != self.player_pos and [i, j] not in self.treasures and random.choice([True, False, False]):
                     walls.append([i, j])
-                    self.grid[i][j] = 1  # Mark the wall in the grid
+                    self.grid[i][j] = 1  
         return walls
-
+    #Gerar agua
     def generate_water(self):
         water = []
         water_size = min(self.maze_size, self.maze_size) // 4
@@ -49,7 +49,7 @@ class Maze:
 
     def is_valid_move(self, pos):
         return 0 <= pos[0] < self.maze_size and 0 <= pos[1] < self.maze_size and self.grid[pos[0]][pos[1]] != 1
-
+    #Código do bfs para a busca
     def bfs(self, start, goal):
         queue = deque([(start, [])])
         visited = set()
@@ -69,19 +69,19 @@ class Maze:
                 queue.append((neighbor, path + [neighbor]))
 
         return []
-
+    #Pegar vizinhos
     def get_neighbors(self, pos):
         neighbors = [(pos[0] + 1, pos[1]), (pos[0] - 1, pos[1]), (pos[0], pos[1] + 1), (pos[0], pos[1] - 1)]
         return [neighbor for neighbor in neighbors if self.is_valid_move(neighbor)]
 
+#Função de moviemntar o jogador
 def move_player(maze):
     global player_pos
     if random.randint(0, 5500) == 0:
         return 'GIVEUP'
 
-    # Utilize o algoritmo BFS para encontrar o tesouro mais próximo
+    # Utilizando a função de achar o tesouro mais proximo para encontrar o tesouro mais próximo( o caminho)
     nearest_treasure, path_to_treasure = find_nearest_treasure_with_path(maze)
-    #path_to_treasure = maze.bfs(tuple(maze.player_pos), tuple(nearest_treasure)) if nearest_treasure else []
     print(steps)   
     if path_to_treasure:
         
@@ -90,7 +90,7 @@ def move_player(maze):
                'LEFT' if next_pos[0] < maze.player_pos[0] else 'RIGHT'
     else:
         return random.choice(['UP', 'DOWN', 'LEFT', 'RIGHT'])
-
+#Função de achar o tesouro mais proximo e usar o bfs para pegar o caminho ate ele
 def find_nearest_treasure_with_path(maze):
     nearest_treasure = None
     nearest_path = None
